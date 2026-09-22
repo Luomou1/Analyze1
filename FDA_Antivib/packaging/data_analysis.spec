@@ -47,7 +47,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="数据分析",
+    name="分析程序",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

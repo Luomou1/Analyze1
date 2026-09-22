@@ -18,6 +18,10 @@ from app import APP_NAME
 RELEASE_API_URL = "https://api.github.com/repos/Luomou1/Analyze1/releases/latest"
 USER_AGENT = "Analyze1-updater"
 INSTALLER_PATTERNS = (
+    "AnalysisProgram-*-setup.exe",
+    "AnalysisProgram-*-setup.exe.part",
+    "分析程序-*-setup.exe",
+    "分析程序-*-setup.exe.part",
     "DataAnalysis-*-setup.exe",
     "DataAnalysis-*-setup.exe.part",
     "FDA_AntiVib_enhance-*-setup.exe",

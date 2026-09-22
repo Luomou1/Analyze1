@@ -23,7 +23,7 @@ def test_pick_release_asset_prefers_installer_exe() -> None:
 
 
 def test_cleanup_cached_installers_removes_all_app_installers(tmp_path) -> None:
-    current = tmp_path / "DataAnalysis-0.1.0-setup.exe"
+    current = tmp_path / "AnalysisProgram-0.1.4-setup.exe"
     old = tmp_path / "DataAnalysis-0.0.9-setup.exe"
     partial = tmp_path / "数据分析-0.1.0-setup.exe.part"
     unrelated = tmp_path / "other-tool-0.0.1-setup.exe"

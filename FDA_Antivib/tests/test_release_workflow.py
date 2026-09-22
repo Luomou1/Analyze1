@@ -34,11 +34,11 @@ def test_release_cleanup_requires_verified_latest(tmp_path: Path, scenario: str)
     shutil.copyfile(Path(__file__).resolve().parents[1] / "scripts" / script.name, script)
     installer = tmp_path / "dist" / "installer"
     installer.mkdir(parents=True)
-    newest = installer / "DataAnalysis-0.1.3-setup.exe"
+    newest = installer / "AnalysisProgram-0.1.4-setup.exe"
     newest.write_bytes(b"new installer")
-    old = installer / "DataAnalysis-0.1.2-setup.exe"
+    old = installer / "DataAnalysis-0.1.3-setup.exe"
     old.write_bytes(b"old installer")
-    portable = tmp_path / "dist" / "数据分析.exe"
+    portable = tmp_path / "dist" / "分析程序.exe"
     portable.write_bytes(b"portable")
     unrelated = installer / "other-tool.exe"
     unrelated.write_bytes(b"unrelated")
@@ -46,7 +46,7 @@ def test_release_cleanup_requires_verified_latest(tmp_path: Path, scenario: str)
     command = r'''
 param($ScriptPath, $Scenario)
 $ErrorActionPreference = 'Stop'
-function python { $global:LASTEXITCODE = 0; '0.1.3' }
+function python { $global:LASTEXITCODE = 0; '0.1.4' }
 function gh {
     $global:LASTEXITCODE = 0
     if ($args[0] -eq 'release') {
@@ -54,10 +54,10 @@ function gh {
         return
     }
     if ($args[1] -like '*/latest') {
-        if ($Scenario -eq 'older_release') { 'v0.1.4' } else { 'v0.1.3' }
+        if ($Scenario -eq 'older_release') { 'v0.1.5' } else { 'v0.1.4' }
         return
     }
-    $file = Get-Item 'dist/installer/DataAnalysis-0.1.3-setup.exe'
+    $file = Get-Item 'dist/installer/AnalysisProgram-0.1.4-setup.exe'
     $digest = 'sha256:' + (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($Scenario -in @('upload_failure', 'digest_mismatch')) { $digest = 'sha256:wrong' }
     @{
@@ -65,7 +65,7 @@ function gh {
         assets = @(@{name = $file.Name; size = $file.Length; digest = $digest})
     } | ConvertTo-Json -Depth 4
 }
-& $ScriptPath -Tag v0.1.3
+& $ScriptPath -Tag v0.1.4
 '''
     harness = tmp_path / "harness.ps1"
     harness.write_text(command, encoding="utf-8")

@@ -124,10 +124,12 @@ DifferentialFiller 使用四邻 Laplace 原位行优先松弛，初始化为有�
 完成范围限定为上述实际执行的 30 组。**原厂所有 UI 特殊分支仍不能宣称全部复现**：自动孔径其他中心规则/矩形/环形、任意用户脚本与掩模编辑、独立 Profile 的全部处理分支以及全部高级参数组合，未在本次工件中穷举；当前应用也没有原厂完整的这些交互功能。标准样品实测验收继续暂缓。历史“未取得任何应用整链输出”的状态由本节取代，历史 DLL 对照不升级成未经运行的 UI 证明。
 ## Windows 发布（Analyze1）
 
-更新检查唯一目标为 `Luomou1/Analyze1` 的最新正式 GitHub Release。当前版本为 0.1.3；升级时同步修改 `app/__init__.py` 和 `pyproject.toml`，安装器版本由构建脚本从应用读取。仅发布安装包，支持 Windows 10 1809 及以上 / Windows 11 x64。
+更新检查唯一目标为 `Luomou1/Analyze1` 的最新正式 GitHub Release。当前版本为 0.1.4；升级时同步修改 `app/__init__.py` 和 `pyproject.toml`，安装器版本由构建脚本从应用读取。仅发布安装包，支持 Windows 10 1809 及以上 / Windows 11 x64。
 
-在本目录使用 PowerShell 7 执行 `pwsh -File scripts/build_windows_exe.ps1`，生成便携 EXE 和安装器。发布前运行 `python -m pytest -q`，并用 `dist/数据分析.exe --smoke-test-imports` 检查打包依赖。将对应源码提交推送并创建版本标签后，创建 Release 草稿，上传 `DataAnalysis-版本-setup.exe`，确认后发布为最新正式版。
+在本目录使用 PowerShell 7 执行 `pwsh -File scripts/build_windows_exe.ps1`，生成便携 EXE 和安装器。发布前运行 `python -m pytest -q`，并用 `dist/分析程序.exe --smoke-test-imports` 检查打包依赖。将对应源码提交推送并创建版本标签后，创建 Release 草稿，上传 `AnalysisProgram-版本-setup.exe`，确认后发布为最新正式版。
 
 构建脚本会先实际运行 EXE 导入检查，失败不生成新安装器。Qt 6.11 使用 Windows 系统 ICU；打包配置明确排除第三方 `icuuc.dll`，避免 PATH 中 Poppler 的同名库混入后因缺少无版本函数而出现 QtGui DLL 加载失败。
 
-每次发布后执行 `pwsh -File scripts/upload_release_installer.ps1 -Tag v0.1.3`（替换为本次版本）。该脚本上传或复用同哈希附件，核对远端文件大小、SHA-256、正式状态和 latest 标签。全部成功后，仅保留 `dist/installer/DataAnalysis-版本-setup.exe`，删除本项目构建目录中的旧安装包、便携 EXE 和中间 EXE；不删除其他软件或已安装程序。失败、草稿、预发行或非最新版本均不清理，可安全重试。已删除的安装包可以从 GitHub Release 重新下载，便携 EXE 可重新构建。
+每次发布后执行 `pwsh -File scripts/upload_release_installer.ps1 -Tag v0.1.4`（替换为本次版本）。该脚本上传或复用同哈希附件，核对远端文件大小、SHA-256、正式状态和 latest 标签。全部成功后，仅保留 `dist/installer/AnalysisProgram-版本-setup.exe`，删除本项目构建目录中的旧安装包、便携 EXE 和中间 EXE；不删除其他软件或已安装程序。失败、草稿、预发行或非最新版本均不清理，可安全重试。已删除的安装包可以从 GitHub Release 重新下载，便携 EXE 可重新构建。
+
+v0.1.4 将窗口标题、应用名称、EXE、安装器和快捷方式统一为“分析程序”。保留 AppId 与全机安装范围；通过 `DisableDirPage=no` 保证普通交互安装在首次安装和升级时均显示路径页，原安装目录只是可修改的默认值。静默安装仍不显示向导，可用 Inno Setup `/DIR` 参数指定目录。同目录升级会清理旧名称 EXE 与旧快捷方式。

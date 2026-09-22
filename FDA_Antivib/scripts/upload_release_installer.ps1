@@ -12,8 +12,8 @@ Set-Location $Root
 $version = python -c "from app import __version__; print(__version__)"
 if ($LASTEXITCODE -ne 0 -or $Tag -ne "v$version") { throw "Tag must match app version." }
 $dist = Join-Path $Root "dist"
-$source = Join-Path $dist "installer\数据分析-$version-setup.exe"
-$assetName = "DataAnalysis-$version-setup.exe"
+$source = Join-Path $dist "installer\分析程序-$version-setup.exe"
+$assetName = "AnalysisProgram-$version-setup.exe"
 $assetPath = Join-Path $dist "installer\$assetName"
 if (Test-Path -LiteralPath $source) { Copy-Item -LiteralPath $source -Destination $assetPath -Force }
 if (-not (Test-Path -LiteralPath $assetPath)) { throw "Build the matching installer first." }
@@ -54,7 +54,7 @@ foreach ($directory in @($dist, (Join-Path $dist "installer"), (Join-Path $Root 
     if ($dirItem.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw "Refuse linked output directory." }
     $targets += Get-ChildItem -LiteralPath $directory -File -Filter '*.exe' | Where-Object {
         $_.FullName -ne $assetPath -and
-        ($_.Name -eq '数据分析.exe' -or $_.Name -match '^(数据分析|DataAnalysis)-\d+\.\d+\.\d+-setup\.exe$')
+        ($_.Name -in @('数据分析.exe', '分析程序.exe') -or $_.Name -match '^(数据分析|分析程序|DataAnalysis|AnalysisProgram)-\d+\.\d+\.\d+-setup\.exe$')
     }
 }
 foreach ($file in $targets) {
