@@ -15,8 +15,8 @@ from typing import Callable
 
 from app import APP_NAME
 
-RELEASE_API_URL = "https://api.github.com/repos/Luomou1/FDA_AntiVib_enhance/releases/latest"
-USER_AGENT = "FDA-AntiVib-enhance-updater"
+RELEASE_API_URL = "https://api.github.com/repos/Luomou1/Analyze1/releases/latest"
+USER_AGENT = "Analyze1-updater"
 INSTALLER_PATTERNS = (
     "DataAnalysis-*-setup.exe",
     "DataAnalysis-*-setup.exe.part",

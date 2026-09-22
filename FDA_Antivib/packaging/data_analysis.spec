@@ -35,6 +35,10 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
+# Qt 6.11 使用 Windows 系统 ICU 的无版本函数名。PATH 中 Poppler 的
+# 同名 icuuc.dll 仅导出带版本后缀的函数，误打包会导致 QtGui 加载失败。
+# Windows 10/11 自带系统 ICU，不能用第三方同名 DLL 覆盖它。
+a.binaries = [entry for entry in a.binaries if Path(entry[0]).name.lower() != "icuuc.dll"]
 pyz = PYZ(a.pure)
 
 exe = EXE(

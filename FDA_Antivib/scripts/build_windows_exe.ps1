@@ -1,58 +1,29 @@
-param(
-    [switch]$SkipInstaller
-)
+param([switch]$SkipInstaller)
 
 $ErrorActionPreference = "Stop"
-$Root = Resolve-Path (Join-Path $PSScriptRoot "..")
+$Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
-function Remove-OldInstallerExe {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$InstallerDir
-    )
-
-    if (-not (Test-Path $InstallerDir)) {
-        return
-    }
-
-    $installers = Get-ChildItem -Path $InstallerDir -Filter "*.exe" -File |
-        Sort-Object @{ Expression = "LastWriteTimeUtc"; Descending = $true },
-            @{ Expression = { if ($_.Name -like "数据分析-*-setup.exe") { 0 } else { 1 } }; Ascending = $true },
-            @{ Expression = "Name"; Ascending = $true }
-
-    if ($installers.Count -le 1) {
-        return
-    }
-
-    $installers | Select-Object -Skip 1 | ForEach-Object {
-        Remove-Item -LiteralPath $_.FullName -Force
-    }
-}
-
+$version = python -c "from app import __version__; print(__version__)"
+if ($LASTEXITCODE -ne 0) { throw "Cannot read app version." }
 python scripts\generate_app_icon.py
+if ($LASTEXITCODE -ne 0) { throw "Icon generation failed." }
 python -m PyInstaller --clean --noconfirm packaging\data_analysis.spec
+if ($LASTEXITCODE -ne 0) { throw "PyInstaller failed." }
+
+# 实际运行打包结果，避免仅源码测试通过而分发包缺失或混入错误 DLL。
+$smoke = Start-Process -FilePath (Join-Path $Root "dist\数据分析.exe") -ArgumentList '--smoke-test-imports' -WindowStyle Hidden -PassThru
+if (-not $smoke.WaitForExit(60000)) { throw "Packaged EXE smoke test timed out; installer not built." }
+if ($smoke.ExitCode -ne 0) { throw "Packaged EXE smoke test failed; installer not built." }
 
 if (-not $SkipInstaller) {
     $iscc = Get-Command ISCC.exe -ErrorAction SilentlyContinue
-    $isccPath = $null
-    if ($null -ne $iscc) {
-        $isccPath = $iscc.Source
+    $isccPath = Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe"
+    if ($null -ne $iscc) { $isccPath = $iscc.Source }
+    if (-not (Test-Path -LiteralPath $isccPath)) {
+        throw "Inno Setup ISCC.exe not found; only the portable EXE was built."
     }
-    if ($null -eq $iscc) {
-        $userIscc = Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe"
-        if (Test-Path $userIscc) {
-            $isccPath = $userIscc
-        }
-    }
-    if ($null -ne $isccPath) {
-        & $isccPath packaging\data_analysis.iss
-        if ($LASTEXITCODE -ne 0) {
-            throw "Inno Setup failed with exit code $LASTEXITCODE."
-        }
-        Remove-OldInstallerExe -InstallerDir (Join-Path $Root "dist\installer")
-    }
-    else {
-        Write-Warning "Inno Setup ISCC.exe was not found. Built dist\数据分析.exe only; installer was skipped."
-    }
+    & $isccPath "/DMyAppVersion=$version" packaging\data_analysis.iss
+    if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed." }
 }
+# 旧产物只在远端发布成功并核对 SHA-256 后清理，构建失败不触发删除。

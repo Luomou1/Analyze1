@@ -1,5 +1,7 @@
 #define MyAppName "数据分析"
-#define MyAppVersion "0.1.2"
+#ifndef MyAppVersion
+  #error MyAppVersion must be supplied by build_windows_exe.ps1
+#endif
 #define MyAppPublisher "Luomou1"
 #define MyAppExeName "数据分析.exe"
 
@@ -18,6 +20,7 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64compatible
+MinVersion=10.0.17763
 
 [Tasks]
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "附加快捷方式："; Flags: unchecked
