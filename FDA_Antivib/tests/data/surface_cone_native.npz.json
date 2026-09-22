@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "f87b765649c28cb01dafcf309b8ae4abf7075e2c79ce91d1811ed8cc4ad62bd2",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\cone_probe.py",
+  "generator_sha256": "c48e8897510b611fd58bd8194ee56c0cec8dc4fcbdf95641b2bd640b26855dcb",
+  "scope": "ConeFitter 固定/自由角度，含凸凹和倾斜；坐标统一长度单位，angle_i 为全锥角度数",
+  "status_offset": "0x44",
+  "version": "MetroPro 10.0.5"
+}

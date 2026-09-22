@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "95505039b00e7380b459a92b7cff9837271653137b3c1632fd61a0729dab10f0",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\fft_fixed_probe.py",
+  "generator_sha256": "584807195b3421bf8931eb7af1230e0c62b4a040430021bcb2e5f0af4e065bba",
+  "scope": "FftFilter 默认预处理，cutoff_shape=2，cutoff 存为 floor_i/ceiling_i (cyc/pixel)；无 GUI 整链证据",
+  "status_offset": "0x0C",
+  "version": "MetroPro 10.0.5"
+}

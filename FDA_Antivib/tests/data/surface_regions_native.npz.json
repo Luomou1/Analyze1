@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "497f07bf5b1ff09247fc975b843dfc226e7c97ce2906bfd4833e3ec2f3cb4b07",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\region_probe.py",
+  "generator_sha256": "b175b6f3efc3208c49f5bea55b914d5207b9a763aa2abdb2c47a55109ff7dc4d",
+  "scope": "RegionFinderConnected 默认有效点模式，四连通、面积包含阈值；不证明 Micro.app 顺序",
+  "invalid_region_id": 2147483640,
+  "status_offset": "0x0C"
+}

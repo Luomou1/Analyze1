@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "3bd6f1b57ccb97f061bd11fde0964d790a2e5c7156a279e64a56f7a1d99f74ba",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\sphere_probe.py",
+  "generator_sha256": "756ce9ac96562b4c0c36e340975dc09ab1c41adf69d16a7ca0ebb6b8e7f79100",
+  "scope": "SphereFitter 固定半径，统一长度单位；input 为高度，radius_i 为指定半径，expected_i_0 为原厂残差",
+  "status_offset": "0x44",
+  "version": "MetroPro 10.0.5"
+}

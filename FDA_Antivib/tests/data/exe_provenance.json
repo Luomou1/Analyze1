@@ -1,0 +1,26 @@
+{
+  "binary": "C:/MetroPro/bin/MetroPro.exe",
+  "sha256": "ab2b7f1063b5485e7a02c9ff131edfc4459b4023926d094d8d9fa7a8bfcfaefd",
+  "method": "LoadLibraryExW DONT_RESOLVE_DLL_REFERENCES; isolated process import/allocator binding; original helper instruction bytes unchanged",
+  "fixtures": {
+    "exe_spectral_three_points.npz": {
+      "rva": "0xAA4430",
+      "cases": 128,
+      "seed": 20260920,
+      "layout": "float32 phase/power pairs; outputs slope and left-bin intercept"
+    },
+    "exe_high_phase_reference.npz": {
+      "rva": "0xAA8EE0",
+      "cases": 20,
+      "seed": 20260920
+    },
+    "exe_high_regions_*.npz": {
+      "rvas": [
+        "0xB17110",
+        "0xA24510"
+      ],
+      "cases": 6
+    }
+  },
+  "scope": "Auxiliary functions only; not end-to-end proof for any reconstruction mode"
+}

@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "2243b15fe40b957f63abac04efdf3a1c61c534c5d7b751d805832ad21a0dd4ee",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\poly4_probe.py",
+  "generator_sha256": "0df60dfc4a11e8b9d62c78db88b224161695896bb5658fd768b07bf0347048e1",
+  "scope": "PolyFitterVari FunctionCompletnessType 0/1, SetOrder(4,4); 不证明 Micro.app 调用映射",
+  "status_offset": "0x44",
+  "version": "MetroPro 10.0.5"
+}

@@ -1,0 +1,15 @@
+{
+  "source": "C:/MetroPro/bin/Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "4107b026b3715f259400b51db1377a4ba009c0c6dc91eee6028cebc1eb9a2502",
+  "generator": "D:/FDA_metro/tmp/metro_evidence/native_oracle/surface_probe.py",
+  "version": "MetroPro 10.0.5",
+  "scope": "单算子对照，不证明 Micro.app UI 组合处理顺序；FFT 样例仅供后续研究",
+  "cases": [
+    "PolyFitter 3/4/6",
+    "Trimmer 1/2",
+    "ConvolveFilter 1/2/3, AvgBad 0/1",
+    "DataFiller 内部孔洞",
+    "SpikeClipper 2.5"
+  ]
+}

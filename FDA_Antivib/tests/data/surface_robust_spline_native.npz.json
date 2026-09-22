@@ -1,0 +1,10 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "2de96152fd58ae9303a38f9226d5f7f51ec0a6d02e1f30a80232c628d9b68b9e",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\robust_spline_probe.py",
+  "generator_sha256": "6f7df9217b8d04a10519cef3905c41c22df8b98eee2d00db73b4b80c89df6895",
+  "scope": "SplineFilter 默认预处理，cutoff_shape=2，cutoff 存为 floor_i/ceiling_i (cyc/pixel)；无 GUI 整链证据",
+  "status_offset": "0x0C",
+  "version": "MetroPro 10.0.5"
+}

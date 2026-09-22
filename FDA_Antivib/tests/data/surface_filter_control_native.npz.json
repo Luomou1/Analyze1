@@ -1,0 +1,8 @@
+{
+  "source": "C:\\MetroPro\\bin\\MetroPro.exe",
+  "source_sha256": "ab2b7f1063b5485e7a02c9ff131edfc4459b4023926d094d8d9fa7a8bfcfaefd",
+  "fixture_sha256": "125736769c5830fe27723d30503066ea02c9b51ed46bd43fab7ef2453be43b9b",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\filter_control_probe.py",
+  "generator_sha256": "29c5033e0299ea6936c8fffbb36c402ef33cb7fff6b3c9abfb8d74ab81c20230",
+  "scope": "EXE 0x9EF8F0 截止频格量化；0x9EF870 矩阵短边；0x986830 (size=5, outside=1)。Auto 10/N、30/N 来自 FilterMgr::getFilterParams 静态证据 0x544320。"
+}

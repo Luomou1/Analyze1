@@ -1,0 +1,587 @@
+{
+  "source": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\Zygo.Metrology.Analysis.Core.dll",
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "23a275982a03ca1d92e9b233b62c882672b46547cc4658222c43053950fb5fd1",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\differential_probe.py",
+  "generator_sha256": "bb3d00a9943c090927230110d3c82854fb9d518f6bf2ceb565ce93a732c5f239",
+  "status_offset": "0x14",
+  "cases": [
+    {
+      "key": "isolated_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "isolated_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "isolated_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "isolated_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "isolated_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "isolated_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "isolated_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "isolated_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "isolated_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "isolated_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "isolated_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "isolated_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "diagonal_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "diagonal_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "diagonal_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "diagonal_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "diagonal_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "diagonal_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "diagonal_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "diagonal_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "diagonal_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "diagonal_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "diagonal_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "diagonal_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "pair_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "pair_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "pair_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "pair_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "pair_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "pair_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "pair_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "pair_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "pair_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "pair_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "pair_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "pair_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "adjacent_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "adjacent_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "adjacent_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "adjacent_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "adjacent_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "adjacent_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "adjacent_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "adjacent_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "adjacent_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "adjacent_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "adjacent_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "adjacent_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "boundary_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "boundary_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "boundary_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "boundary_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "boundary_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "boundary_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "boundary_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "boundary_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "boundary_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "boundary_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "boundary_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "boundary_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "block_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "block_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "block_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "block_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "block_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "block_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "block_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "block_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "block_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "block_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "block_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "block_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "step_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "step_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "step_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "step_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "step_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "step_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "step_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "step_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "step_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "step_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "step_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "step_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "sparse_0_0",
+      "mode": 0,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "sparse_0_1",
+      "mode": 0,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "sparse_0_4",
+      "mode": 0,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "sparse_0_25",
+      "mode": 0,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "sparse_1_0",
+      "mode": 1,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "sparse_1_1",
+      "mode": 1,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "sparse_1_4",
+      "mode": 1,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "sparse_1_25",
+      "mode": 1,
+      "maximum": 25,
+      "status": 0
+    },
+    {
+      "key": "sparse_2_0",
+      "mode": 2,
+      "maximum": 0,
+      "status": 0
+    },
+    {
+      "key": "sparse_2_1",
+      "mode": 2,
+      "maximum": 1,
+      "status": 0
+    },
+    {
+      "key": "sparse_2_4",
+      "mode": 2,
+      "maximum": 4,
+      "status": 0
+    },
+    {
+      "key": "sparse_2_25",
+      "mode": 2,
+      "maximum": 25,
+      "status": 0
+    }
+  ],
+  "scope": "DifferentialFiller modes 0/1/2; 单算子，不证明 EXE UI 调用顺序。"
+}

@@ -1,0 +1,22 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local analysis outputs and temporary working files
+output/
+tmp/
+private/
+
+# Packaging outputs
+build/
+dist/
+*.spec.bak
+
+# Local editor and environment files
+.venv/
+venv/
+.env
+.env.*
+.idea/
+.vscode/

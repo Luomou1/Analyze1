@@ -1,0 +1,36 @@
+{
+  "source_version": "MetroPro 10.0.5",
+  "phase_dll_sha256": "bc0ca331043b85c04e249881215e847af37c9e0bd957427e9e2cdb7d04887660",
+  "analysis_dll_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "oracle": "直接调用未修改的数值DLL；仅在隔离进程中修正CPU枚举RVA 0x18C803处除零的RDI为64，未改算法指令。",
+  "pixel_entry": "PhaseProcessing.Core RVA 0xE0E50",
+  "fringe_entry": "PhaseProcessing.Core RVA 0xE63B0, mode=2",
+  "stages_entry": "RVA 0xE47B0 + 0xE4020",
+  "frame_adaptation": "按用户要求使用实际有效N帧；以N*dz/2统一扫描参考，不复制硬件环形缓存坐标。",
+  "scope": "宽频段逐像素数学及默认模式2浮点级次分析；不等于EXE全部FDA模式、仪器标定、采集处理的完整替代。",
+  "sources": [
+    "https://patents.google.com/patent/US5398113A/en",
+    "https://doi.org/10.1364/AO.41.004571"
+  ],
+  "fixtures": {
+    "fda_native_fringe.npz": "4cc380dfda13d1e97a72a38b40630fba98f1a7e16d6803b7bd825da5df4a771c",
+    "fda_native_stages.npz": "cbe50f8f13ad81c0ead4749f7e8085310e2031d3c22a452bc46122621b7e935d",
+    "fda_pixel_native_103.npz": "9ecae3cb822c562c523f4aba2bc89225e3a6188f2e394fad1ed166c41d5ad457",
+    "fda_pixel_native_128.npz": "c4e789918a1be6a1f63fd62015ab536fa71f5773f53cab26322d0508fb5a4a93",
+    "fda_pixel_native_169.npz": "42837ba0bc640af6a2f56303eec97444391a356799dd06ebd90f82391f2e030d",
+    "fda_pixel_native_201.npz": "cf2f3cd23e58289e0b190a0234c595a259cbae3c4313dbf204b9a3d3097c2475",
+    "fda_pixel_native_64.npz": "9787b53957467d93634903aca5d046ebf96d0a2749b60c9b5c9fbe2020277218",
+    "fringe_case_0.npz": "642802fdd2118811eee54f0b5011295b9cdd4edcedd4ad0d01c5499995ef747a",
+    "fringe_case_1.npz": "c8bb4b829ece0712057e333bc5be620c574fc67154ab9e220b96bf8e9fa0130d",
+    "fringe_case_2.npz": "1cc2652b1ec3d7121eb20855bcb93744fb5f49b25ca203542054de2b161b5e44",
+    "fringe_case_3.npz": "04f6199ffc89b23295a48bcf08bf8e2146a33a907e6d4c52630d9288e70f5e73",
+    "fringe_case_4.npz": "3457e65a7e8bf54bb22b8423ba9e96dce69c13f94e52d06f039aafde901e1862",
+    "fringe_case_5.npz": "c0a51d287b2ae8abced29e130fba938611f7ac03b2e014f5a14e9e4ab9515db8",
+    "fringe_case_5_stages.npz": "baebcb8dbe73fe6d9da00c08dd971e4ec9353f86824ac8c96b4e15a6d10a5194",
+    "fringe_flat.npz": "18afa18d5064ea2a38d08561cda3801bac1f26872031ad346adcde3825922005",
+    "fringe_islands.npz": "6875ff7cdb7b1400fa7c46bd10cc6528bb744b8985618e48f2bbb172c5b02b91",
+    "fringe_noisy_gap.npz": "096046f77f356b0b6cbd5690b7f1ec20576a7b2882c83e0dffec52833612dbfb",
+    "fringe_rough.npz": "8000efbdd194d0a36ee5414fb400b03352f42bbda583bc7d3faa2aad86add6e8",
+    "fringe_step.npz": "711f661a9698005b94de85ae0cf1945843b97dfcd2d84445ee61b364472ddbb1"
+  }
+}

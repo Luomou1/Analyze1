@@ -1,0 +1,109 @@
+{
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "5bd77778be59110611dfad0173df8b1b2961496c5819f1032430a8b0e372e459",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\surface_chain_probe.py",
+  "generator_sha256": "c6a8b41470c9e466298b27fc22f678819637e8968117b0b560ea7f93988171db",
+  "cases": [
+    {
+      "index": 0,
+      "trim": 0,
+      "trim_mode": "All",
+      "filter_mode": "Low Pass",
+      "stages": [
+        "trim",
+        "spikes",
+        "filter",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 1,
+      "trim": 1,
+      "trim_mode": "All",
+      "filter_mode": "Off",
+      "stages": [
+        "trim",
+        "spikes",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 2,
+      "trim": 2,
+      "trim_mode": "All",
+      "filter_mode": "Low Pass",
+      "stages": [
+        "trim",
+        "spikes",
+        "filter",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 3,
+      "trim": 0,
+      "trim_mode": "All",
+      "filter_mode": "Off",
+      "stages": [
+        "trim",
+        "spikes",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 4,
+      "trim": 1,
+      "trim_mode": "Outside",
+      "filter_mode": "Low Pass",
+      "stages": [
+        "trim",
+        "spikes",
+        "filter",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 5,
+      "trim": 2,
+      "trim_mode": "Outside",
+      "filter_mode": "Off",
+      "stages": [
+        "trim",
+        "spikes",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 6,
+      "trim": 0,
+      "trim_mode": "Outside",
+      "filter_mode": "Low Pass",
+      "stages": [
+        "trim",
+        "spikes",
+        "filter",
+        "form",
+        "fill"
+      ]
+    },
+    {
+      "index": 7,
+      "trim": 1,
+      "trim_mode": "Outside",
+      "filter_mode": "Off",
+      "stages": [
+        "trim",
+        "spikes",
+        "form",
+        "fill"
+      ]
+    }
+  ],
+  "scope": "DLL 算子按 EXE PhaseContext 静态顺序组合，Min Area=0；非 UI 端到端、非实测验收。"
+}

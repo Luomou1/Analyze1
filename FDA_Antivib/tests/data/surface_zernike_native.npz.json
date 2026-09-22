@@ -1,0 +1,7 @@
+{
+  "source_sha256": "440b0d068ff74489373d4744ddeba71604092807c8500e18d0e864e3b1d55c0d",
+  "fixture_sha256": "574416d1b9b2e96ddc974d2310bfbef0774967c905715b0b23c95c8059f481f9",
+  "generator": "D:\\FDA_metro\\tmp\\metro_evidence\\native_oracle\\zernike_probe.py",
+  "generator_sha256": "556928fb9cd69d2e5cfd5a7135f54829ccfc76c6baf035ce1395a1d55d3b4f04",
+  "scope": "Fringe orders2/4/6/8/10, circle(18,16,14), orientation0, normalization0, selective removal; status+0x44"
+}
