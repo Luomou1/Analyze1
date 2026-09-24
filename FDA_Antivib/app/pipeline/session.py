@@ -40,6 +40,7 @@ class AnalysisParams:
     expand_active_range: bool = False
     active_range_left_expansion_frames: int = 35
     active_range_right_expansion_frames: int = 35
+    gfda_calibration_path: Path | None = None
 
 
 @dataclass(slots=True)
@@ -65,6 +66,7 @@ class AnalysisSession:
             "scan_positions_used_um": "scan_positions_used_um.txt",
             "scan_positions_monotone_um": "scan_positions_monotone_um.txt",
             "scan_step_raw_um": "scan_step_raw_um.txt",
+            "scan_step_used_um": "scan_step_used_um.txt",
             "scan_step_monotone_um": "scan_step_monotone_um.txt",
             "scan_step_reversal_mask": "scan_step_reversal_mask.txt",
             "scan_position_correction_um": "scan_position_correction_um.txt",

@@ -50,6 +50,9 @@ from app.core.surface_options import SurfaceOptions
 from app.core.surface_processing import surface_stats
 from app.core.surface_step_report import StepRegionReport, evaluate_regions, export_step_report, measurement_notes
 from app.plotting.preview import build_normalized_surface_grid
+from app.plotting.brightness import apply_height_lighting
+from app.plotting.surface_jobs import SurfaceJobs, prepare_surface
+from app.plotting.surface_style import SURFACE_CMAP, SurfaceDisplayControls, configure_surface_scene, surface_geometry, surface_color_limits, compact_scalar_bar
 
 FONT_PROP = configure_matplotlib_fonts()
 
@@ -150,11 +153,13 @@ class ResultFigureCanvas(FigureCanvasQTAgg):
     def draw_height_map(self, data: np.ndarray, title: str) -> None:
         self.figure.clear()
         axes = self.figure.add_subplot(111)
-        image = axes.imshow(data, cmap="viridis", origin="upper", aspect="equal")
+        image = axes.imshow(data, cmap=SURFACE_CMAP, origin="upper", aspect="equal", interpolation="nearest",
+                            vmin=surface_color_limits(data)[0], vmax=surface_color_limits(data)[1])
         axes.set_title(title)
         axes.set_xlabel("X（像素）")
         axes.set_ylabel("Y（像素）")
         self.figure.colorbar(image, ax=axes, fraction=0.035, pad=0.025, label="高度（nm）")
+        apply_height_lighting(self, image)
         self.draw_idle()
 
     def draw_layer_map(self, result: StepAnalysisResult) -> None:
@@ -308,7 +313,13 @@ class Surface3DCanvas(QWidget):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self._render_enabled = render_enabled
-        self._stack = QStackedLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self._surface_shape = (2, 2)
+        self.surface_controls = SurfaceDisplayControls(self._update_surface_display, self.reset_view)
+        layout.addWidget(self.surface_controls)
+        self._stack = QStackedLayout()
+        layout.addLayout(self._stack)
         self._message_label = QLabel("请选择高度文件并开始分析。")
         self._message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._message_label.setWordWrap(True)
@@ -316,6 +327,7 @@ class Surface3DCanvas(QWidget):
         self._plotter: QtInteractor | None = None
         self._last_display_bounds: tuple[float, float, float, float, float, float] | None = None
         self._closed = False
+        self._surface_jobs = SurfaceJobs(self, self.show_message)
         self._stack.addWidget(self._message_label)
         self.show_message("请选择高度文件并开始分析。")
 
@@ -325,9 +337,21 @@ class Surface3DCanvas(QWidget):
             self._stack.addWidget(self._plotter)
         return self._plotter
 
+    def _update_surface_display(self) -> None:
+        if self._plotter is not None and not self._closed:
+            self.surface_controls.apply(self._plotter, self._surface_shape)
+            self._render_if_visible()
+
+    def reset_view(self) -> None:
+        if self._plotter is not None and not self._closed:
+            self._plotter.view_isometric(render=False)
+            self._plotter.reset_camera(render=False)
+            self._render_if_visible()
+
     def show_message(self, message: str) -> None:
         if self._plotter is not None:
             self._plotter.clear()
+        self._surface_jobs.cancel()
         self._message_label.setText(message)
         self._stack.setCurrentWidget(self._message_label)
 
@@ -348,7 +372,22 @@ class Surface3DCanvas(QWidget):
         data: np.ndarray,
         title: str,
         z_limits: tuple[float, float] | None = None,
+        *, _prepared=None,
     ) -> None:
+        if self._closed:
+            return
+        if _prepared is None and data.size >= 65536 and self._render_enabled:
+            snapshot = np.array(data, copy=True)
+            self._message_label.setText("正在后台准备全分辨率三维表面…")
+            self._stack.setCurrentWidget(self._message_label)
+            self._surface_jobs.submit(lambda: prepare_surface(snapshot, z_limits, padded=True),
+                                     lambda prepared: self.draw_surface(snapshot, title, z_limits, _prepared=prepared))
+            return
+        if _prepared is None:
+            self._surface_jobs.cancel()
+        if not np.isfinite(data).any():
+            self.show_message("没有有效高度点可绘制。")
+            return
         if self._plotter is not None:
             self._plotter.hide()
             self._plotter.setUpdatesEnabled(False)
@@ -357,11 +396,9 @@ class Surface3DCanvas(QWidget):
         if self.isVisible():
             self._message_label.repaint()
 
-        grid, display_values, x_coords, y_coords, z_bounds = build_normalized_surface_grid(
-            data,
-            max_points=256,
-            z_bounds=_height_limits(data) if z_limits is None else z_limits,
-        )
+        prepared = _prepared if _prepared is not None else prepare_surface(data, z_limits, padded=True)
+        display_values, x_coords, y_coords, z_bounds = prepared.values, prepared.x, prepared.y, prepared.bounds
+        self._surface_shape = data.shape
         self._last_display_bounds = (
             float(x_coords[0]),
             float(x_coords[-1]),
@@ -376,48 +413,47 @@ class Surface3DCanvas(QWidget):
             self._stack.setCurrentWidget(self._message_label)
             return
 
+        mesh = prepared.mesh
+        if not mesh.n_cells:
+            self.show_message("没有相邻有效高度点可构成表面。")
+            if self._plotter is not None:
+                self._plotter.setUpdatesEnabled(True)
+            return
+
         plotter = self._ensure_plotter()
         plotter.suppress_rendering = True
         try:
             plotter.clear()
-            plotter.set_background("#ffffff")
+            configure_surface_scene(plotter)
             plotter.add_mesh(
-                grid,
-                scalars=display_values.ravel(order="F"),
-                cmap="viridis",
+                mesh,
+                scalars="height",
+                cmap=SURFACE_CMAP,
                 smooth_shading=True,
                 show_scalar_bar=True,
-                scalar_bar_args={
-                    "title": "高度（nm）",
-                    "vertical": True,
-                    "position_x": 0.88,
-                    "position_y": 0.20,
-                    "width": 0.045,
-                    "height": 0.58,
-                    "label_font_size": 9,
-                    "title_font_size": 10,
-                    "color": "#111827",
-                },
-                clim=z_bounds,
+                scalar_bar_args=compact_scalar_bar(),
+                clim=surface_color_limits(data),
             )
-            plotter.add_text(title, position="upper_edge", font_size=10, color="#111827")
+            plotter.scalar_bar.SetBarRatio(0.12)
+            plotter.add_text(title, position="upper_edge", font_size=10, color="#e2e8f0")
             plotter.show_bounds(
                 bounds=(0.0, 1.0, 0.0, 1.0, 0.0, 1.0),
                 axes_ranges=self._last_display_bounds,
-                xtitle="X（像素）",
-                ytitle="Y（像素）",
-                ztitle="高度（nm）",
+                xtitle="X (pixels)",
+                ytitle="Y (pixels)",
+                ztitle="Height (nm)",
                 grid="back",
                 location="outer",
                 all_edges=True,
-                color="#374151",
+                color="#cbd5e1",
                 font_size=10,
                 n_xlabels=5,
                 n_ylabels=5,
                 n_zlabels=5,
             )
-            plotter.camera_position = [(1.55, -1.70, 1.12), (0.5, 0.5, 0.46), (0.0, 0.0, 1.0)]
-            plotter.camera.zoom(0.92)
+            self.surface_controls.apply(plotter, self._surface_shape)
+            plotter.view_isometric(render=False)
+            plotter.reset_camera(render=False)
         finally:
             plotter.suppress_rendering = False
             plotter.setUpdatesEnabled(True)
@@ -426,12 +462,14 @@ class Surface3DCanvas(QWidget):
         self._render_if_visible()
 
     def shutdown(self) -> None:
+        self._surface_jobs.cancel()
         if not self._closed and self._plotter is not None:
             render_timer = getattr(self._plotter, "render_timer", None)
             if render_timer is not None:
                 render_timer.stop()
             self._plotter.close()
             self._closed = True
+        self._closed = True
 
     def closeEvent(self, event) -> None:
         self.shutdown()
@@ -475,10 +513,12 @@ class StepSelectionCanvas(FigureCanvasQTAgg):
         if self._data is None:
             return
         self.axes.clear()
-        self.axes.imshow(self._data, cmap="viridis", origin="upper", aspect="equal")
+        image = self.axes.imshow(self._data, cmap=SURFACE_CMAP, origin="upper", aspect="equal", interpolation="nearest",
+                         vmin=surface_color_limits(self._data)[0], vmax=surface_color_limits(self._data)[1])
         self.axes.set_title(title)
         self.axes.set_xlabel("X（像素）")
         self.axes.set_ylabel("Y（像素）")
+        apply_height_lighting(self, image)
 
     def start_point_selection(self, data: np.ndarray) -> None:
         self._disable_selector()

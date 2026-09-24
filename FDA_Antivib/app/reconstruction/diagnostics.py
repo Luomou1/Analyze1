@@ -4,6 +4,9 @@ from app.reconstruction.spectrum import phase_fit,prepare_signals
 
 
 def build_pixel_analysis(intensity_data,x,y,step_size,start_height=0.,maximum_scan_value=4095.,**options):
+    if options.get('gfda_result') is not None:
+        from app.reconstruction.gfda_diagnostics import pixel_diagnostics
+        return pixel_diagnostics(np.asarray(intensity_data),x,y,options['gfda_result'])
     raw=np.asarray(intensity_data[y,x],dtype=float);n=len(raw);bins=np.arange(2,n//2)
     shifted,peak_frame=prepare_signals(raw[None],bins)
     spectrum=np.conj(np.fft.rfft(shifted,axis=1))

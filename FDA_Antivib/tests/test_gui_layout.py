@@ -127,6 +127,34 @@ def test_navigation_widgets_expose_visual_state(qtbot) -> None:
     assert status_pill.text() == "正在分析"
 
 
+def test_scan_step_accepts_five_decimal_places(qtbot, safe_main_window) -> None:
+    window = safe_main_window()
+    qtbot.addWidget(window)
+    assert window.step_size.decimals() == 5
+    assert window.step_size.minimum() == pytest.approx(0.00001)
+    window.step_size.setValue(0.00001)
+    assert window.step_size.value() == pytest.approx(0.00001)
+
+
+def test_surface_tab_builds_only_once_for_latest_result(qtbot, safe_main_window):
+    from types import SimpleNamespace
+    window = safe_main_window()
+    qtbot.addWidget(window)
+    calls = []
+    window.surface_canvas.draw_surface = lambda data, title: calls.append(data)
+    latest = np.arange(12.).reshape(3, 4)
+    window._result = SimpleNamespace(h=latest)
+    window._pending_surface_tabs = {"surface", "h_prime_surface", "comparison"}
+    index = window.tabs.indexOf(window._plot_tabs["surface"])
+    window._render_pending_surface_tab(-1)
+    assert not calls
+    window._render_pending_surface_tab(index)
+    window._render_pending_surface_tab(index)
+    assert len(calls) == 1
+    assert calls[0] is latest
+    assert window._pending_surface_tabs == {"h_prime_surface", "comparison"}
+
+
 @pytest.mark.parametrize("kind", ["workbench", "logs", "settings"])
 def test_navigation_icons_are_bundled_and_platform_independent(kind: str, qapp) -> None:
     assert not build_nav_icon(kind).isNull()
@@ -155,7 +183,7 @@ def test_main_window_uses_guided_console_layout(qtbot, safe_main_window) -> None
     assert window.image_intensity_mode.currentData() == "mono12_uint16"
     assert window.analysis_window_name.currentData() == "none"
     assert [window.analysis_method.itemData(i) for i in range(window.analysis_method.count())] == [
-        "normal", "high", "high1g", "high2g",
+        "normal", "high", "high1g", "high2g", "gfda",
     ]
     window.analysis_method.setCurrentIndex(window.analysis_method.findData("high2g"))
     assert window.analysis_mode_label.text() == "High 2G"

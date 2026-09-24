@@ -105,7 +105,11 @@ class AnalysisWorker(QObject):
             sample_positions = self._resolve_sample_positions(cube.shape[2])
             # 公共 K0 阶段已经确认过有效范围时，正式分析直接复用同一段帧；
             # 只有用户跳过公共 K0 或数据源变化导致没有缓存时，才重新检测。
-            if self.params.active_range is not None:
+            if self.params.analysis_method == 'gfda':
+                # GFDA 需要包络两侧的直流与边界参考；保留全部真实采集帧。
+                cube, sample_positions, active_range = apply_known_active_range(
+                    cube, sample_positions, (1, cube.shape[-1]))
+            elif self.params.active_range is not None:
                 cube, sample_positions, active_range = apply_known_active_range(
                     cube,
                     sample_positions,
@@ -145,6 +149,7 @@ class AnalysisWorker(QObject):
                 progress=self._emit_analysis_progress,
                 unwrap_method=self.params.unwrap_method, window_size=self.params.window_size,
                 common_k0=self.params.fixed_k0,
+                gfda_calibration_path=self.params.gfda_calibration_path,
             )
             result["active_range"] = np.asarray([active_range.start_frame, active_range.end_frame], dtype=np.int32)
             result["active_ranges"] = np.asarray(active_range.ranges, dtype=np.int32)
@@ -214,6 +219,7 @@ class GlobalK0Worker(QObject):
         window_size: int = 3,
         fitting_method: str = "weighted",
         unwrap_method: str = "exe",
+        gfda_calibration_path: Path | None = None,
     ) -> None:
         super().__init__()
         self.folder = folder
@@ -234,6 +240,7 @@ class GlobalK0Worker(QObject):
         self.window_size = int(window_size)
         self.fitting_method = fitting_method
         self.unwrap_method = unwrap_method
+        self.gfda_calibration_path = gfda_calibration_path
         self.last_cube: np.ndarray | None = None
 
 
@@ -279,12 +286,13 @@ class GlobalK0Worker(QObject):
             sample_positions = self._resolve_sample_positions(cube.shape[2])
             left_expansion_frames = self.active_range_left_expansion_frames if self.expand_active_range else 0
             right_expansion_frames = self.active_range_right_expansion_frames if self.expand_active_range else 0
-            cube, sample_positions, active_range = apply_active_range(
-                cube,
-                sample_positions,
-                left_expansion_frames=left_expansion_frames,
-                right_expansion_frames=right_expansion_frames,
-            )
+            if self.analysis_method == 'gfda':
+                cube, sample_positions, active_range = apply_known_active_range(
+                    cube, sample_positions, (1, cube.shape[-1]))
+            else:
+                cube, sample_positions, active_range = apply_active_range(
+                    cube, sample_positions, left_expansion_frames=left_expansion_frames,
+                    right_expansion_frames=right_expansion_frames)
             self.last_cube = cube
             self.log.emit(
                 f"公共 K0 使用有效扫描范围：{active_range.start_frame}-{active_range.end_frame}，"
@@ -306,6 +314,8 @@ class GlobalK0Worker(QObject):
                 window_alpha=self.window_alpha,
                 zero_padding_mode=self.zero_padding_mode,
                 sample_positions_um=sample_positions,
+                analysis_method=self.analysis_method,
+                gfda_calibration_path=self.gfda_calibration_path,
             )
             result["active_range"] = np.asarray([active_range.start_frame, active_range.end_frame], dtype=np.int32)
             result["active_ranges"] = np.asarray(active_range.ranges, dtype=np.int32)

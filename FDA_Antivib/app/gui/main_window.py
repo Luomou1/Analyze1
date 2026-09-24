@@ -45,6 +45,7 @@ from PySide6.QtWidgets import (
 
 from app import APP_NAME, __version__
 from app.reconstruction.diagnostics import build_pixel_analysis
+from app.gui.gfda_controls import GfdaControls
 from app.core.result_model import AnalysisResult
 from app.gui.fringe_profile_window import FringeProfileWindow
 from app.gui.pixel_window import PixelAnalysisWindow
@@ -551,10 +552,11 @@ class MainWindow(QMainWindow):
         sampling_form.addRow("采样模式", self.sampling_mode)
 
         self.step_size = QDoubleSpinBox()
-        self.step_size.setDecimals(4)
-        self.step_size.setRange(0.0001, 1e6)
+        self.step_size.setDecimals(5)
+        self.step_size.setRange(0.00001, 1e6)
         self.step_size.setValue(0.05)
-        sampling_form.addRow("步长 um", self.step_size)
+        self.step_size_label = QLabel("步长 um")
+        sampling_form.addRow(self.step_size_label, self.step_size)
 
         self.scan_log_edit = QLineEdit()
         self.scan_log_button = QPushButton("选择")
@@ -591,8 +593,8 @@ class MainWindow(QMainWindow):
         form.addRow("采样模式", self.sampling_mode)
 
         self.step_size = QDoubleSpinBox()
-        self.step_size.setDecimals(4)
-        self.step_size.setRange(0.0001, 1e6)
+        self.step_size.setDecimals(5)
+        self.step_size.setRange(0.00001, 1e6)
         self.step_size.setValue(0.05)
         form.addRow("步长 um", self.step_size)
 
@@ -625,7 +627,7 @@ class MainWindow(QMainWindow):
         self.fixed_k0.setEnabled(True)
         self.fixed_k0.setSpecialValueText("自动计算")
         self.fixed_k0.setKeyboardTracking(False)
-        self.fixed_k0.setToolTip("High1G / High 2G：修改数值后使用手动公共K0；设为0恢复自动计算。")
+        self.fixed_k0.setToolTip("High1G / High 2G / GFDA 使用手动公共K0；GFDA 同时用它建立扫描尺度，设为0恢复自动。")
         self.fixed_k0.setValue(0.0)
         self._manual_common_k0 = False
         self.fixed_k0.valueChanged.connect(self._mark_common_k0_manual)
@@ -681,12 +683,17 @@ class MainWindow(QMainWindow):
         self.analysis_method.addItem("High", "high")
         self.analysis_method.addItem("High1G", "high1g")
         self.analysis_method.addItem("High 2G", "high2g")
+        self.analysis_method.addItem("GFDA", "gfda")
         self.analysis_method.currentIndexChanged.connect(self._update_analysis_mode_ui)
         self.analysis_method.currentIndexChanged.connect(self._mark_algorithm_configured)
         form.addRow("工作流", self.analysis_method)
         self.analysis_mode_label = QLabel("Normal")
         form.addRow("当前方法", self.analysis_mode_label)
         layout.addLayout(form)
+        self.gfda_controls = GfdaControls(self)
+        self.gfda_controls.changed.connect(self._invalidate_gfda_preview)
+        self.gfda_controls.setVisible(False)
+        layout.addWidget(self.gfda_controls)
 
         layout.addWidget(SectionHeader("运行", "算法参数确认后，在这里直接自动定 K0 或开始分析。"))
         self.auto_k0_button = QPushButton("自动定 K0")
@@ -1100,8 +1107,8 @@ class MainWindow(QMainWindow):
         sampling_form.addRow("采样模式", self.sampling_mode)
 
         self.step_size = QDoubleSpinBox()
-        self.step_size.setDecimals(4)
-        self.step_size.setRange(0.0001, 1e6)
+        self.step_size.setDecimals(5)
+        self.step_size.setRange(0.00001, 1e6)
         self.step_size.setValue(0.05)
         sampling_form.addRow("步长 um", self.step_size)
 
@@ -1186,6 +1193,7 @@ class MainWindow(QMainWindow):
         self.analysis_method.addItem("High", "high")
         self.analysis_method.addItem("High1G", "high1g")
         self.analysis_method.addItem("High 2G", "high2g")
+        self.analysis_method.addItem("GFDA", "gfda")
         self.analysis_method.currentIndexChanged.connect(self._update_analysis_mode_ui)
         algorithm_form.addRow("工作流", self.analysis_method)
         algorithm_layout.addLayout(algorithm_form)
@@ -1279,8 +1287,8 @@ class MainWindow(QMainWindow):
         form.addRow("采样模式", self.sampling_mode)
 
         self.step_size = QDoubleSpinBox()
-        self.step_size.setDecimals(4)
-        self.step_size.setRange(0.0001, 1e6)
+        self.step_size.setDecimals(5)
+        self.step_size.setRange(0.00001, 1e6)
         self.step_size.setValue(0.05)
         form.addRow("步长（um）", self.step_size)
 
@@ -1364,6 +1372,7 @@ class MainWindow(QMainWindow):
         self.analysis_method.addItem("High", "high")
         self.analysis_method.addItem("High1G", "high1g")
         self.analysis_method.addItem("High 2G", "high2g")
+        self.analysis_method.addItem("GFDA", "gfda")
         self.analysis_method.currentIndexChanged.connect(self._update_analysis_mode_ui)
         form.addRow("工作流", self.analysis_method)
         layout.addLayout(form)
@@ -1420,8 +1429,8 @@ class MainWindow(QMainWindow):
         self.tabs.tabBar().setUsesScrollButtons(True)
         self.tabs.tabBar().setElideMode(Qt.ElideRight)
         self.tabs.tabBar().setExpanding(False)
-        self.h_prime_canvas = HeatmapCanvas()
-        self.h_canvas = HeatmapCanvas()
+        self.h_prime_canvas = HeatmapCanvas(surface_style=True)
+        self.h_canvas = HeatmapCanvas(surface_style=True)
         self.phi0_canvas = HeatmapCanvas()
         self.surface_canvas = SurfaceCanvas()
         self.h_prime_surface_canvas = SurfaceCanvas()
@@ -1438,6 +1447,8 @@ class MainWindow(QMainWindow):
             "k0": self._build_plot_tab(self.k0_canvas, "k0"),
         }
         self.k0_tab = self._plot_tabs["k0"]
+        self._pending_surface_tabs: set[str] = set()
+        self.tabs.currentChanged.connect(self._render_pending_surface_tab)
         self._diagnostic_tab = self._build_diagnostic_tab()
         self._update_analysis_mode_ui()
         self.result_content_stack = QStackedWidget()
@@ -1726,12 +1737,12 @@ class MainWindow(QMainWindow):
     def _is_high2g_mode(self) -> bool:
         """只有 high2g 系列工作流需要显示 high2g gap 专属图层。"""
         method = str(self.analysis_method.currentData()).strip().lower()
-        return method == "high2g"
+        return method in {"high2g", "gfda"}
 
     def _refresh_result_tabs(self) -> None:
         """根据当前工作流刷新结果页签。"""
         self.high2g_diagnostics_button.setVisible(self._is_high2g_mode())
-        result_ready = self._result is not None and self._result.extras.get("analysis_method") == "high2g"
+        result_ready = self._result is not None and self._result.extras.get("analysis_method") in {"high2g", "gfda"}
         self.high2g_diagnostics_button.setEnabled(result_ready)
         current_widget = self.tabs.currentWidget() if hasattr(self, "tabs") else None
         self.tabs.clear()
@@ -1769,12 +1780,26 @@ class MainWindow(QMainWindow):
                 control.addItem(label, data)
                 control.setEnabled(False)
                 control.blockSignals(False)
-        self.unwrap.setEnabled(True)
+        is_gfda = self.analysis_method.currentData() == 'gfda'
+        self.unwrap.setEnabled(not is_gfda)
+        self.unwrap.setItemText(self.unwrap.findData('exe'),
+                               'GFDA连续相位展开' if is_gfda else 'EXE连续频段展开')
+        if is_gfda:
+            self.unwrap.setCurrentIndex(self.unwrap.findData('exe'))
+        self.unwrap.setToolTip('GFDA 使用实际坐标频谱的连续相位展开。' if is_gfda else '')
+        self.step_size.setToolTip('预期每帧的扫描位移；GFDA 以此建立长度尺度，再估计实际步进。' if is_gfda else '')
+        if hasattr(self, 'step_size_label'):
+            self.step_size_label.setText('名义扫描步长（μm）' if is_gfda else '步长 um')
+        if hasattr(self, 'gfda_controls'):
+            self.gfda_controls.setVisible(is_gfda)
+        self.expand_active_range_checkbox.setEnabled(not is_gfda)
+        self.active_range_left_expansion_frames.setEnabled(not is_gfda)
+        self.active_range_right_expansion_frames.setEnabled(not is_gfda)
         self.window_size.setEnabled(True)
         self._refresh_result_tabs()
         if hasattr(self, "analysis_mode_label"):
             method = str(self.analysis_method.currentData()).strip().lower()
-            label = {"normal":"Normal", "high":"High", "high1g":"High1G", "high2g":"High 2G"}[method]
+            label = {"normal":"Normal", "high":"High", "high1g":"High1G", "high2g":"High 2G", "gfda":"GFDA"}[method]
             auto_k0_label = "计算公共 K0"
             self.analysis_mode_label.setText(label)
             self.auto_k0_button.setText(auto_k0_label)
@@ -1782,6 +1807,11 @@ class MainWindow(QMainWindow):
         self._refresh_step_states()
         if self._result is not None:
             self._update_diagnostic_summary(self._result)
+
+    def _invalidate_gfda_preview(self) -> None:
+        """校正路径变更只使预览缓存失效，已有结果仍由原快照解释。"""
+        self._auto_k0_result = None
+        self._refresh_step_states()
 
     def _update_diagnostic_summary(self, result: AnalysisResult) -> None:
         """
@@ -1831,7 +1861,7 @@ class MainWindow(QMainWindow):
             if key in result.extras
         ]
         analysis_method = str(result.extras.get("analysis_method", "unknown"))
-        result_label = {"normal":"Normal斜率高度", "high":"High精细高度", "high1g":"High1G级次校正高度", "high2g":"High 2G连接高度"}.get(analysis_method,analysis_method)
+        result_label = {"normal":"Normal斜率高度", "high":"High精细高度", "high1g":"High1G级次校正高度", "high2g":"High 2G连接高度", "gfda":"GFDA抗振高度"}.get(analysis_method,analysis_method)
         lines = [
             f"结果模型: h（斜率高度） / h_prime（{result_label}） / phi0（k0处相位）",
             f"工作流: {analysis_method}",
@@ -1845,6 +1875,11 @@ class MainWindow(QMainWindow):
             f"|h - h_prime| 均值: {delta_abs_mean:.6f}",
             f"h - h_prime 范围: [{delta_min:.6f}, {delta_max:.6f}]",
         ]
+        if result.extras.get('gfda_applied'):
+            confidence = np.asarray(result.extras['scan_step_confidence'])
+            lines.extend([f"GFDA：已执行，扫描参考 K0={result.extras['gfda_scan_k0']:.6f}",
+                          f"观测步进：{np.count_nonzero(confidence)}/{len(confidence)}；包络外尾部为名义延拓",
+                          "校正坐标：一次三点平滑；实际频谱未重采样强度"])
         self._diagnostic_summary.setPlainText("\n".join(lines))
 
     def _draw_optional_diagnostic_map(self, result: AnalysisResult, key: str, canvas: HeatmapCanvas, title: str) -> None:
@@ -1859,13 +1894,18 @@ class MainWindow(QMainWindow):
             data = np.full_like(result.h, np.nan, dtype=np.float32)
         canvas.draw_map(self._convert_map_for_display(key, np.asarray(data, dtype=np.float32)), title)
 
-    def _current_source_key(self) -> tuple[str, str, str, str, str, bool, int, int]:
+    def _current_source_key(self) -> tuple:
         """生成当前数据源签名，用于判断公共 K0 的有效范围缓存是否仍可复用。"""
         data_source = str(self.data_source.currentData())
         source_text = self.mat_edit.text().strip() if data_source == "mat_file" else self.folder_edit.text().strip()
         intensity_mode = str(self.image_intensity_mode.currentData()) if data_source == "image_folder" else "mat"
         sampling_mode = str(self.sampling_mode.currentData())
         scan_log_text = self.scan_log_edit.text().strip() if sampling_mode == "nonuniform" else ""
+        calibration_path = self.gfda_controls.calibration_path if hasattr(self, 'gfda_controls') else None
+        try:
+            calibration_stamp = calibration_path.stat().st_mtime_ns if calibration_path else None
+        except OSError:
+            calibration_stamp = None
         # Windows 路径大小写不敏感，这里统一 casefold，避免同一路径不同大小写导致缓存误判失效。
         return (
             data_source,
@@ -1876,6 +1916,9 @@ class MainWindow(QMainWindow):
             bool(self.expand_active_range_checkbox.isChecked()),
             int(self.active_range_left_expansion_frames.value()),
             int(self.active_range_right_expansion_frames.value()),
+            str(self.analysis_method.currentData()), float(self.step_size.value()),
+            int(self.window_size.value()), str(self.unwrap.currentData()),
+            str(calibration_path), calibration_stamp,
         )
 
     def _extract_active_range_pair(self, payload: object) -> tuple[int, int] | None:
@@ -1974,6 +2017,7 @@ class MainWindow(QMainWindow):
             image_intensity_mode=str(self.image_intensity_mode.currentData()) if data_source == "image_folder" else "legacy_8bit",
             mat_path=mat_path,
             analysis_method=workflow,
+            gfda_calibration_path=self.gfda_controls.calibration_path if workflow == 'gfda' else None,
             sampling_mode=sampling_mode,
             scan_log_path=scan_log_path,
             sample_positions_um=None,
@@ -2023,6 +2067,7 @@ class MainWindow(QMainWindow):
 
         self._result = None
         self._analysis_cube = None
+        self.gfda_controls.set_result({})
         self._analysis_params = params
         self.export_text_button.setEnabled(False)
         self.export_figures_button.setEnabled(False)
@@ -2112,6 +2157,7 @@ class MainWindow(QMainWindow):
             sampling_mode=sampling_mode,
             scan_log_path=scan_log_path,
             analysis_method=workflow,
+            gfda_calibration_path=self.gfda_controls.calibration_path if workflow == 'gfda' else None,
             window_size=int(self.window_size.value()),
             fitting_method=str(self.fitting.currentData()),
             unwrap_method=str(self.unwrap.currentData()),
@@ -2278,10 +2324,15 @@ class MainWindow(QMainWindow):
                 page.status_label.setText('分析仍在运行，请等待完成后再关闭窗口。')
                 event.ignore()
                 return
+        if self._thread is not None and self._thread.isRunning():
+            self.status_label.setText('分析仍在运行，请等待完成后再关闭窗口。')
+            event.ignore()
+            return
         for canvas_name in ("surface_canvas", "h_prime_surface_canvas", "comparison_canvas"):
             canvas = getattr(self, canvas_name, None)
             if canvas is not None and hasattr(canvas, "shutdown"):
                 canvas.shutdown()
+        self.gfda_controls.close_diagnostics()
         for page_name in ("plane_analysis_page", "step_analysis_page"):
             page = getattr(self, page_name, None)
             if page is not None and hasattr(page, "shutdown"):
@@ -2290,7 +2341,7 @@ class MainWindow(QMainWindow):
 
     def _toggle_high2g_diagnostics(self) -> None:
         """仅在用户请求时创建并绘制诊断图，每次新结果默认关闭。"""
-        if not self._is_high2g_mode() or self._result is None or self._result.extras.get("analysis_method") != "high2g":
+        if not self._is_high2g_mode() or self._result is None or self._result.extras.get("analysis_method") not in {"high2g", "gfda"}:
             return
         if not self._high2g_diagnostics_visible:
             if not self._high2g_diagnostics_ready:
@@ -2355,7 +2406,14 @@ class MainWindow(QMainWindow):
         刷新当前模式主结果及可用的诊断图层。
         """
         analysis_result = AnalysisResult.coerce(result)
+        # 刷新页签会发出 currentChanged，先撤销上一批未绘制任务。
+        self._pending_surface_tabs.clear()
+        for canvas in (self.surface_canvas, self.h_prime_surface_canvas, self.comparison_canvas):
+            jobs = getattr(canvas, "_surface_jobs", None)
+            if jobs is not None:
+                jobs.cancel()
         self._result = analysis_result
+        self.gfda_controls.set_result(analysis_result.to_mapping())
         if np.isfinite(analysis_result.k0_value):
             self._show_automatic_common_k0(analysis_result.k0_value)
             self.auto_k0_value_label.setText(f"{analysis_result.k0_value:.6f}")
@@ -2370,19 +2428,34 @@ class MainWindow(QMainWindow):
         self._high2g_diagnostics_visible = False
         self.high2g_diagnostics_button.setText("显示额外诊断图")
         self._refresh_result_tabs()
-        self.surface_canvas.draw_surface(analysis_result.h, "h（三维，斜率高度）")
-        self.h_prime_surface_canvas.draw_surface(analysis_result.h_prime, "h_prime（三维，最终高度）")
-        comparison_title = f"粗高度 vs {analysis_result.extras.get('analysis_mode', '')} 最终高度"
-        self.comparison_canvas.draw_comparison(
-            analysis_result.h,
-            analysis_result.h_prime,
-            comparison_title,
-        )
+        self._pending_surface_tabs = {"surface", "h_prime_surface", "comparison"}
+        self._render_pending_surface_tab(self.tabs.currentIndex())
         self._set_preview_stage(4)
         self._update_diagnostic_summary(analysis_result)
         self._set_active_range_display(self._extract_active_range_pair(analysis_result.extras.get("active_range")))
         self._refresh_step_states()
         self._append_log("结果预览已更新。")
+
+    def _render_pending_surface_tab(self, index: int) -> None:
+        """仅为当前页签构建全分辨率网格；新结果覆盖尚未绘制的旧结果。"""
+        if self._result is None:
+            return
+        page = self.tabs.widget(index)
+        key = next((name for name in self._pending_surface_tabs
+                    if self._plot_tabs[name] is page), None)
+        if key is None:
+            return
+        result = self._result
+        if key == "surface":
+            self.surface_canvas.draw_surface(result.h, "h（三维，斜率高度）")
+        elif key == "h_prime_surface":
+            self.h_prime_surface_canvas.draw_surface(result.h_prime, "h_prime（三维，最终高度）")
+        else:
+            self.comparison_canvas.draw_comparison(
+                result.h, result.h_prime,
+                f"粗高度 vs {result.extras.get('analysis_mode', '')} 最终高度",
+            )
+        self._pending_surface_tabs.remove(key)
 
     def _handle_auto_k0_finished(self, result: dict) -> None:
         """处理公共 K0 成功结果并刷新相关 UI。"""
@@ -2409,7 +2482,7 @@ class MainWindow(QMainWindow):
 
     def _mark_common_k0_manual(self, value: float) -> None:
         self._manual_common_k0 = value > 0
-        self.fixed_k0.setToolTip("手动公共K0：High1G / High 2G高度计算使用此值；设为0恢复自动。" if value > 0 else "自动统计有效像素的公共K0。")
+        self.fixed_k0.setToolTip("手动公共K0：High1G / High 2G / GFDA 使用此值；GFDA 同时据此建立扫描尺度，设为0恢复自动。" if value > 0 else "自动统计有效像素的公共K0。")
 
     def _show_automatic_common_k0(self, value: float) -> None:
         """计算结果写回不能伪装成用户编辑，也不能覆盖已有手动值。"""
@@ -2457,6 +2530,8 @@ class MainWindow(QMainWindow):
             global_k0_value=global_k0_value,
             maximum_scan_value=4095.0 if self._analysis_params.image_intensity_mode == "mono12_uint16" else 255.0,
             sample_positions_um=self._analysis_params.sample_positions_um,
+            gfda_result=(self._result.to_mapping() if self._result is not None
+                         and self._result.extras.get('gfda_applied') else None),
             window_name=self._analysis_params.window_name,
             window_alpha=self._analysis_params.window_alpha,
             zero_padding_mode=self._analysis_params.zero_padding_mode,
@@ -2551,6 +2626,16 @@ class MainWindow(QMainWindow):
             ("h_prime", "h_prime 数据"),
             ("phi0", "phi0 数据"),
         ]
+        if self._result.extras.get('gfda_applied'):
+            options.extend([
+                ('scan_positions_raw_um', '名义扫描坐标（μm）'),
+                ('scan_positions_estimated_raw_um', '平滑前估计坐标（μm）'),
+                ('scan_positions_used_um', 'GFDA 使用坐标（μm）'),
+                ('scan_step_used_um', 'GFDA 使用步进（μm）'),
+                ('scan_step_confidence', '扫描步进置信度'),
+                ('scan_phase_estimated_rad', '扫描相位步进（rad）'),
+                ('scan_position_correction_um', '扫描坐标修正（μm）'),
+            ])
         dialog = ExportSelectionDialog(
             "选择导出数据",
             options,
@@ -2569,6 +2654,7 @@ class MainWindow(QMainWindow):
             "scan_positions_used_um": "scan_positions_used_um.txt",
             "scan_positions_monotone_um": "scan_positions_monotone_um.txt",
             "scan_step_raw_um": "scan_step_raw_um.txt",
+            "scan_step_used_um": "scan_step_used_um.txt",
             "scan_step_monotone_um": "scan_step_monotone_um.txt",
             "scan_step_reversal_mask": "scan_step_reversal_mask.txt",
             "scan_position_correction_um": "scan_position_correction_um.txt",
